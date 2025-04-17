@@ -1,5 +1,49 @@
 # test-mbd
 
+
+Sebelum tuning
+
+
+![image](https://github.com/user-attachments/assets/331ce59f-4e92-42e9-bf0c-e1b7dc9b830f)
+
+ Yang terjadi:
+DISTINCT memaksa DB untuk mencari baris unik.
+
+ORDER BY memaksa sorting, dan ini bisa memicu Disk Sort kalau data besar.
+
+Kombinasi DISTINCT dan ORDER BY membuat query optimizer lebih sulit memilih path tercepat.
+
+Sort Merge Join atau Hash Join bisa terjadi tergantung data dan index (meskipun kamu gak pakai index).
+
+📉 Konsekuensi:
+Eksekusi bisa lebih lambat.
+
+Memory usage tinggi karena DISTINCT + SORT.
+
+Tidak sesuai petunjuk tugas: "hindari sort".
+
+
+Setelah Tuning
+
+![image](https://github.com/user-attachments/assets/fc382805-86d2-4ddb-8c0d-4d2dcc16d921)
+
+ Yang terjadi:
+GROUP BY digunakan untuk mengelompokkan data unik, efeknya sama seperti DISTINCT dalam konteks ini.
+
+Tidak ada ORDER BY, sehingga menghindari sort.
+
+Query lebih ringan untuk query planner, lebih mudah dioptimasi.
+
+Cocok dengan prinsip tuning: hindari sort, hindari DISTINCT, hindari ORDER BY.
+
+📈 Keuntungan:
+Eksekusi lebih cepat.
+
+Ramah resource (tidak butuh banyak memori).
+
+Cocok untuk data besar dan partial scanning (ingat: query hanya ambil sebagian kecil data).
+
+
 Analisis
 
 ## Analisis Perbandingan Query Plan
